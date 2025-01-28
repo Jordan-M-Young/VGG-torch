@@ -88,9 +88,33 @@ class VGGB(torch.nn.Module):
         """Initialize VGG B Model."""
         super(VGGB, self).__init__()
 
-        self.a_1 = torch.nn.Conv2d(3, 64, (3, 3), stride=1, padding=1)
-        self.a_mx_1 = torch.nn.MaxPool2d(kernel_size=(2, 2), stride=2)
-        self.a_2 = torch.nn.Conv2d(64, 128, (3, 3), strid=1, padding=1)
+        self.b_1 = torch.nn.Conv2d(3, 64, (3, 3), stride=1, padding=1)
+        self.b_2 = torch.nn.Conv2d(64, 64, (3, 3), strid=1, padding=1)
+        self.b_mx_1 = torch.nn.MaxPool2d(kernel_size=(2, 2), stride=2)
+
+        self.b_3 = torch.nn.Conv2d(64, 128, kernel_size=(3, 3), stride=1, padding=1)
+        self.b_4 = torch.nn.Conv2d(128, 128, kernel_size=(3, 3), stride=1, padding=1)
+        self.b_mx_2 = torch.nn.MaxPool2d(kernel_size=(2, 2), stride=2)
+
+        self.b_5 = torch.nn.Conv2d(128, 256, kernel_size=(3, 3), stride=1, padding=1)
+        self.b_6 = torch.nn.Conv2d(256, 256, kernel_size=(3, 3), stride=1, padding=1)
+        self.b_mx_3 = torch.nn.MaxPool2d(kernel_size=(2, 2), stride=2)
+
+        self.b_7 = torch.nn.Conv2d(256, 512, kernel_size=(3, 3), stride=1, padding=1)
+        self.b_8 = torch.nn.Conv2d(512, 512, kernel_size=(3, 3), stride=1, padding=1)
+        self.b_mx_4 = torch.nn.MaxPool2d(kernel_size=(2, 2), stride=2)
+
+        self.b_9 = torch.nn.Conv2d(512, 512, kernel_size=(3, 3), stride=1, padding=1)
+        self.b_10 = torch.nn.Conv2d(512, 512, kernel_size=(3, 3), stride=1, padding=1)
+        self.a_mx_5 = torch.nn.MaxPool2d(kernel_size=(2, 2), stride=2)
+
+        self.fc1 = torch.nn.Linear(4096, 4096)
+        self.re1 = torch.nn.ReLU()
+        self.fc2 = torch.nn.Linear(4096, 4096)
+        self.re2 = torch.nn.ReLU()
+        self.fc3 = torch.nn.Linear(4096, 1000)
+        self.re3 = torch.nn.ReLU()
+        self.soft = torch.nn.Softmax(dim=1)
 
     def forward(self, x: torch.Tensor):
         """Model Forward Pass."""
