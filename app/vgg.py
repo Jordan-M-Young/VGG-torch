@@ -138,19 +138,19 @@ class VGGC(torch.nn.Module):
 
         self.c_5 = torch.nn.Conv2d(128, 256, kernel_size=(3, 3), stride=1, padding=1)
         self.c_6 = torch.nn.Conv2d(256, 256, kernel_size=(3, 3), stride=1, padding=1)
-        self.c_7 = torch.nn.Conv2d(256, 256, kernel_size=(3, 3), stride=1, padding=1)
+        self.c_7 = torch.nn.Conv2d(256, 256, kernel_size=(1, 1), stride=1, padding=1)
 
         self.c_mx_3 = torch.nn.MaxPool2d(kernel_size=(2, 2), stride=2)
 
         self.c_8 = torch.nn.Conv2d(256, 512, kernel_size=(3, 3), stride=1, padding=1)
         self.c_9 = torch.nn.Conv2d(512, 512, kernel_size=(3, 3), stride=1, padding=1)
-        self.c_10 = torch.nn.Conv2d(512, 512, kernel_size=(3, 3), stride=1, padding=1)
+        self.c_10 = torch.nn.Conv2d(512, 512, kernel_size=(1, 1), stride=1, padding=1)
 
         self.c_mx_4 = torch.nn.MaxPool2d(kernel_size=(2, 2), stride=2)
 
         self.c_11 = torch.nn.Conv2d(512, 512, kernel_size=(3, 3), stride=1, padding=1)
         self.c_12 = torch.nn.Conv2d(512, 512, kernel_size=(3, 3), stride=1, padding=1)
-        self.c_13 = torch.nn.Conv2d(512, 512, kernel_size=(3, 3), stride=1, padding=1)
+        self.c_13 = torch.nn.Conv2d(512, 512, kernel_size=(1, 1), stride=1, padding=1)
         self.c_mx_5 = torch.nn.MaxPool2d(kernel_size=(2, 2), stride=2)
 
         self.fc1 = torch.nn.Linear(4096, 4096)
@@ -182,6 +182,10 @@ class VGGC(torch.nn.Module):
             self.c_mx_5,
         )
 
+        self.fc_net = torch.nn.Sequential(
+            self.fc1, self.re1, self.fc2, self.re2, self.fc3, self.re3
+        )
+
     def forward(self, x: torch.Tensor):
         """Model Forward Pass."""
         pass
@@ -194,9 +198,62 @@ class VGGD(torch.nn.Module):
         """Initialize VGG D Model."""
         super(VGGD, self).__init__()
 
-        self.a_1 = torch.nn.Conv2d(3, 64, (3, 3), stride=1, padding=1)
-        self.a_mx_1 = torch.nn.MaxPool2d(kernel_size=(2, 2), stride=2)
-        self.a_2 = torch.nn.Conv2d(64, 128, (3, 3), strid=1, padding=1)
+        self.d_1 = torch.nn.Conv2d(3, 64, (3, 3), stride=1, padding=1)
+        self.d_2 = torch.nn.Conv2d(64, 64, (3, 3), strid=1, padding=1)
+        self.d_mx_1 = torch.nn.MaxPool2d(kernel_size=(2, 2), stride=2)
+
+        self.d_3 = torch.nn.Conv2d(64, 128, kernel_size=(3, 3), stride=1, padding=1)
+        self.d_4 = torch.nn.Conv2d(128, 128, kernel_size=(3, 3), stride=1, padding=1)
+        self.d_mx_2 = torch.nn.MaxPool2d(kernel_size=(2, 2), stride=2)
+
+        self.d_5 = torch.nn.Conv2d(128, 256, kernel_size=(3, 3), stride=1, padding=1)
+        self.d_6 = torch.nn.Conv2d(256, 256, kernel_size=(3, 3), stride=1, padding=1)
+        self.d_7 = torch.nn.Conv2d(256, 256, kernel_size=(3, 3), stride=1, padding=1)
+
+        self.d_mx_3 = torch.nn.MaxPool2d(kernel_size=(2, 2), stride=2)
+
+        self.d_8 = torch.nn.Conv2d(256, 512, kernel_size=(3, 3), stride=1, padding=1)
+        self.d_9 = torch.nn.Conv2d(512, 512, kernel_size=(3, 3), stride=1, padding=1)
+        self.d_10 = torch.nn.Conv2d(512, 512, kernel_size=(3, 3), stride=1, padding=1)
+
+        self.d_mx_4 = torch.nn.MaxPool2d(kernel_size=(2, 2), stride=2)
+
+        self.d_11 = torch.nn.Conv2d(512, 512, kernel_size=(3, 3), stride=1, padding=1)
+        self.d_12 = torch.nn.Conv2d(512, 512, kernel_size=(3, 3), stride=1, padding=1)
+        self.d_13 = torch.nn.Conv2d(512, 512, kernel_size=(3, 3), stride=1, padding=1)
+        self.d_mx_5 = torch.nn.MaxPool2d(kernel_size=(2, 2), stride=2)
+
+        self.fc1 = torch.nn.Linear(4096, 4096)
+        self.re1 = torch.nn.ReLU()
+        self.fc2 = torch.nn.Linear(4096, 4096)
+        self.re2 = torch.nn.ReLU()
+        self.fc3 = torch.nn.Linear(4096, 1000)
+        self.re3 = torch.nn.ReLU()
+        self.soft = torch.nn.Softmax(dim=1)
+
+        self.conv = torch.nn.Sequential(
+            self.d_1,
+            self.d_2,
+            self.d_mx_1,
+            self.d_3,
+            self.d_4,
+            self.d_mx_2,
+            self.d_5,
+            self.d_6,
+            self.d_7,
+            self.d_mx_3,
+            self.d_8,
+            self.d_9,
+            self.d_10,
+            self.d_mx_4,
+            self.d_11,
+            self.d_12,
+            self.d_13,
+            self.d_mx_5,
+        )
+        self.fc_net = torch.nn.Sequential(
+            self.fc1, self.re1, self.fc2, self.re2, self.fc3, self.re3
+        )
 
     def forward(self, x: torch.Tensor):
         """Model Forward Pass."""
