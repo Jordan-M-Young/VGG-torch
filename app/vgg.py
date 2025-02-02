@@ -15,7 +15,7 @@ class VGGALrn(torch.nn.Module):
         # which uses this config for LRN
         self.a_lrn = torch.nn.LocalResponseNorm(5, alpha=0.0001, beta=0.75, k=2)
         self.a_mx_1 = torch.nn.MaxPool2d(kernel_size=(2, 2), stride=2)
-        self.a_2 = torch.nn.Conv2d(64, 128, (3, 3), strid=1, padding=1)
+        self.a_2 = torch.nn.Conv2d(64, 128, (3, 3), stride=1, padding=1)
         self.a_mx_2 = torch.nn.MaxPool2d(kernel_size=(2, 2), stride=2)
         self.a_3 = torch.nn.Conv2d(128, 256, kernel_size=(3, 3), stride=1, padding=1)
         self.a_4 = torch.nn.Conv2d(256, 256, kernel_size=(3, 3), stride=1, padding=1)
@@ -63,13 +63,14 @@ class VGGALrn(torch.nn.Module):
 class VGGA(torch.nn.Module):
     """VGG Implementation Class."""
 
-    def __init__(self):
+    def __init__(self, n_classes: int):
         """Initialize VGG A-lrn Model."""
         super(VGGA, self).__init__()
+        self.n_classes = n_classes
 
         self.a_1 = torch.nn.Conv2d(3, 64, (3, 3), stride=1, padding=1)
         self.a_mx_1 = torch.nn.MaxPool2d(kernel_size=(2, 2), stride=2)
-        self.a_2 = torch.nn.Conv2d(64, 128, (3, 3), strid=1, padding=1)
+        self.a_2 = torch.nn.Conv2d(64, 128, (3, 3), stride=1, padding=1)
         self.a_mx_2 = torch.nn.MaxPool2d(kernel_size=(2, 2), stride=2)
         self.a_3 = torch.nn.Conv2d(128, 256, kernel_size=(3, 3), stride=1, padding=1)
         self.a_4 = torch.nn.Conv2d(256, 256, kernel_size=(3, 3), stride=1, padding=1)
@@ -81,11 +82,11 @@ class VGGA(torch.nn.Module):
         self.a_8 = torch.nn.Conv2d(512, 512, kernel_size=(3, 3), stride=1, padding=1)
         self.a_mx_5 = torch.nn.MaxPool2d(kernel_size=(2, 2), stride=2)
 
-        self.fc1 = torch.nn.Linear(4096, 4096)
+        self.fc1 = torch.nn.Linear(32768, 4096)
         self.re1 = torch.nn.ReLU()
         self.fc2 = torch.nn.Linear(4096, 4096)
         self.re2 = torch.nn.ReLU()
-        self.fc3 = torch.nn.Linear(4096, 1000)
+        self.fc3 = torch.nn.Linear(4096, self.n_classes)
         self.re3 = torch.nn.ReLU()
         self.soft = torch.nn.Softmax(dim=1)
 
@@ -116,6 +117,7 @@ class VGGA(torch.nn.Module):
     def forward(self, input: torch.Tensor):
         """Model Forward Pass."""
         output = self.conv_net(input)
+        output = output.view(output.size(0),-1)
         output = self.fc_net(output)
         output = self.soft(output)
 
@@ -130,7 +132,7 @@ class VGGB(torch.nn.Module):
         super(VGGB, self).__init__()
 
         self.b_1 = torch.nn.Conv2d(3, 64, (3, 3), stride=1, padding=1)
-        self.b_2 = torch.nn.Conv2d(64, 64, (3, 3), strid=1, padding=1)
+        self.b_2 = torch.nn.Conv2d(64, 64, (3, 3), stride=1, padding=1)
         self.b_mx_1 = torch.nn.MaxPool2d(kernel_size=(2, 2), stride=2)
 
         self.b_3 = torch.nn.Conv2d(64, 128, kernel_size=(3, 3), stride=1, padding=1)
@@ -159,6 +161,8 @@ class VGGB(torch.nn.Module):
 
     def forward(self, x: torch.Tensor):
         """Model Forward Pass."""
+
+
         pass
 
 
@@ -170,7 +174,7 @@ class VGGC(torch.nn.Module):
         super(VGGC, self).__init__()
 
         self.c_1 = torch.nn.Conv2d(3, 64, (3, 3), stride=1, padding=1)
-        self.c_2 = torch.nn.Conv2d(64, 64, (3, 3), strid=1, padding=1)
+        self.c_2 = torch.nn.Conv2d(64, 64, (3, 3), stride=1, padding=1)
         self.c_mx_1 = torch.nn.MaxPool2d(kernel_size=(2, 2), stride=2)
 
         self.c_3 = torch.nn.Conv2d(64, 128, kernel_size=(3, 3), stride=1, padding=1)
@@ -240,7 +244,7 @@ class VGGD(torch.nn.Module):
         super(VGGD, self).__init__()
 
         self.d_1 = torch.nn.Conv2d(3, 64, (3, 3), stride=1, padding=1)
-        self.d_2 = torch.nn.Conv2d(64, 64, (3, 3), strid=1, padding=1)
+        self.d_2 = torch.nn.Conv2d(64, 64, (3, 3), stride=1, padding=1)
         self.d_mx_1 = torch.nn.MaxPool2d(kernel_size=(2, 2), stride=2)
 
         self.d_3 = torch.nn.Conv2d(64, 128, kernel_size=(3, 3), stride=1, padding=1)
@@ -308,7 +312,7 @@ class VGGE(torch.nn.Module):
         """Initialize VGG Model."""
         super(VGGE, self).__init__()
         self.e_1 = torch.nn.Conv2d(3, 64, (3, 3), stride=1, padding=1)
-        self.e_2 = torch.nn.Conv2d(64, 64, (3, 3), strid=1, padding=1)
+        self.e_2 = torch.nn.Conv2d(64, 64, (3, 3), stride=1, padding=1)
         self.e_mx_1 = torch.nn.MaxPool2d(kernel_size=(2, 2), stride=2)
 
         self.e_3 = torch.nn.Conv2d(64, 128, kernel_size=(3, 3), stride=1, padding=1)

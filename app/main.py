@@ -14,11 +14,12 @@ def main():
     """Main Training Loop."""
     TEST_FRACTION = 0.2
     BATCH_SIZE = 32
-    EPOCHS = 2
+    EPOCHS = 5
     data = ad.load_data()
 
     images = data["images"]
     labels = data["labels"]
+    n_classes = data['n_classes']
 
     dataset = ad.ImageDataset(images, labels)
     size = len(dataset)
@@ -29,7 +30,7 @@ def main():
     train_dataloader = DataLoader(train_dataset, batch_size=BATCH_SIZE)
     test_dataloader = DataLoader(test_dataset, batch_size=BATCH_SIZE)
 
-    model = VGGA()
+    model = VGGA(n_classes=n_classes)
 
     optimizer = Adam(params=model.parameters(), lr=0.0001)
     loss_fn = CrossEntropyLoss()

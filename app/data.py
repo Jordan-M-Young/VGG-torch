@@ -38,7 +38,7 @@ class ImageDataset(Dataset):
         n_labels = self.get_n_labels()
 
         lab_set = set()
-        base_encoding = [0] * n_labels
+        base_encoding = [0.0] * n_labels
         encoded_labels = []
         encodings = {}
         count = 0
@@ -47,8 +47,8 @@ class ImageDataset(Dataset):
                 encoded_labels.append(encodings[label])
             else:
                 lab_set.add(label)
-                encoding = base_encoding
-                encoding[count] = 1
+                encoding = base_encoding.copy()
+                encoding[count] = 1.0
                 encodings[label] = encoding
                 encoded_labels.append(encoding)
                 count += 1
