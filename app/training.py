@@ -20,6 +20,9 @@ def train(
         labels = np.array(labels)
         labels = labels.reshape(len(images), output.shape[1])
         labels = tensor(labels)
+
+
+
         loss = loss_func(output, labels)
 
         loss_val = loss.detach().item()
